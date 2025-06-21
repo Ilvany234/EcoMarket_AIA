@@ -1,7 +1,7 @@
 package com.ecomarket_spa.ecomarket_spa.controller;
 
 import com.ecomarket_spa.ecomarket_spa.model.Pedido;
-import com.ecomarket_spa.ecomarket_spa.service.OrderService;
+import com.ecomarket_spa.ecomarket_spa.service.PedidoService;
 import org.springframework.web.bind.annotation.*;
 
         import java.util.List;
@@ -10,34 +10,34 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/pedidos")
 public class PedidoController {
 
-    private final OrderService orderService;
+    private final PedidoService pedidoService;
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
+    public PedidoController(PedidoService pedidoService) {
+        this.pedidoService = pedidoService;
     }
 
     @PostMapping
-    public Order createOrder(@RequestBody Order order) {
-        return orderService.save(order);
+    public Pedido createPedido(@RequestBody Pedido pedido) {
+        return pedidoService.save(pedido);
     }
 
     @GetMapping
-    public List<Order> getAllOrders() {
-        return orderService.findAll();
+    public List<Pedido> getAllPedidos() {
+        return pedidoService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Order getOrder(@PathVariable Long id) {
-        return orderService.findById(id);
+    public Pedido getPedido(@PathVariable Long id) {
+        return pedidoService.findById(id);
     }
 
     @PutMapping("/{id}")
-    public Order updateOrder(@PathVariable Long id, @RequestBody Order order) {
-        return orderService.update(id, order);
+    public Pedido updatePedido(@PathVariable Long id, @RequestBody Pedido pedido) {
+        return pedidoService.update(id, pedido);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteOrder(@PathVariable Long id) {
-        orderService.delete(id);
+    public void deletePedido(@PathVariable Long id) {
+        pedidoService.delete(id);
     }
 }

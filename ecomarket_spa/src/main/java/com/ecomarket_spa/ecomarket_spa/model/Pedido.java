@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "orders") // "order" es palabra reservada en SQL
+@Table(name = "pedidos") // "order" es palabra reservada en SQL
 public class Pedido {
 
     @Id
