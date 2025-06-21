@@ -40,7 +40,7 @@ public class DataLoader implements CommandLineRunner {
         for (int i = 0; i < 20; i++) {
             Catalogo catalogo = new Catalogo();
             catalogo.setName(faker.commerce().productName());
-            catalogo.setDescripcion(faker.lorem().sentence());
+            catalogo.setDescription(faker.lorem().sentence());
             catalogo.setPrice(Double.parseDouble(faker.commerce().price(10.0, 300.0)));
             catalogo.setStock(faker.number().numberBetween(10, 200));
             catalogoRepository.save(catalogo);
