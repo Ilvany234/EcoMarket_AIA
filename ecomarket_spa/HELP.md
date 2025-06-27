@@ -9,7 +9,7 @@ For further reference, please consider the following sections:
 * [Spring Web](https://docs.spring.io/spring-boot/3.5.0/reference/web/servlet.html)
 * [Spring Data JPA](https://docs.spring.io/spring-boot/3.5.0/reference/data/sql.html#data.sql.jpa-and-spring-data)
 
-### Guides
+### Guides and followings
 The following guides illustrate how to use some features concretely:
 
 * [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
