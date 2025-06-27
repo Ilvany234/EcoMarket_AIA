@@ -1,42 +1,73 @@
 package com.ecomarket_spa.ecomarket_spa.service;
 
+
 import com.ecomarket_spa.ecomarket_spa.model.Catalogo;
-import com.ecomarket_spa.ecomarket_spa.repository.CatalogoRepository;
 import org.springframework.stereotype.Service;
 
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class CatalogoService {
 
-    private final CatalogoRepository productRepository;
 
-    public CatalogoService(CatalogoRepository productRepository) {
-        this.productRepository = productRepository;
+    private final List<Catalogo> catalogoMock = new ArrayList<>();
+
+
+    public CatalogoService() {
+        catalogoMock.add(new Catalogo(1L, "Detergente ecológico", 4590.0, 100));
+        catalogoMock.add(new Catalogo(2L, "Cepillo biodegradable", 2990.0, 50));
     }
 
-    public Catalogo save(Catalogo product) {
-        return productRepository.save(product);
+
+    // GET todos los productos
+    public List<Catalogo> obtenerCatalogo() {
+        return catalogoMock;
     }
 
-    public List<Catalogo> findAll() {
-        return productRepository.findAll();
+
+    // GET por ID
+    public Catalogo obtenerPorId(Long id) {
+        return catalogoMock.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 
-    public Catalogo findById(Long id) {
-        return productRepository.findById(id).orElseThrow();
+
+    // POST crear producto
+    public Catalogo crearProducto(Catalogo nuevo) {
+        nuevo.setId((long) (catalogoMock.size() + 1));
+        catalogoMock.add(nuevo);
+        return nuevo;
     }
 
-    public Catalogo update(Long id, Catalogo product) {
-        Catalogo existing = findById(id);
-        existing.setName(product.getName());
-        existing.setDescription(product.getDescription());
-        existing.setPrice(product.getPrice());
-        existing.setStock(product.getStock());
-        return productRepository.save(existing);
+
+    // PUT actualizar producto
+    public Catalogo actualizarProducto(Long id, Catalogo actualizado) {
+        Optional<Catalogo> existenteOpt = catalogoMock.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst();
+
+
+        if (existenteOpt.isPresent()) {
+            Catalogo existente = existenteOpt.get();
+            existente.setNombre(actualizado.getNombre());
+            existente.setPrecio(actualizado.getPrecio());
+            existente.setStock(actualizado.getStock());
+            return existente;
+        }
+        return null;
     }
 
-    public void delete(Long id) {
-        productRepository.deleteById(id);
+
+    // DELETE eliminar producto
+    public boolean eliminarProducto(Long id) {
+        return catalogoMock.removeIf(p -> p.getId().equals(id));
     }
 }
+
+

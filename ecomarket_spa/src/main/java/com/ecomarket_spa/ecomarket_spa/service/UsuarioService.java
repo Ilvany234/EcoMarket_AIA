@@ -1,41 +1,52 @@
 package com.ecomarket_spa.ecomarket_spa.service;
 
+
 import com.ecomarket_spa.ecomarket_spa.model.Usuario;
-import com.ecomarket_spa.ecomarket_spa.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
+
 
 @Service
 public class UsuarioService {
 
-    private final UsuarioRepository usuarioRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
+    private final List<Usuario> usuarios = new ArrayList<>();
+    private final AtomicLong idGenerator = new AtomicLong(1);
+
+
+    public List<Usuario> obtenerTodos() {
+        return usuarios;
     }
 
-    public Usuario register(Usuario user) {
-        return usuarioRepository.save(user);
+
+    public Optional<Usuario> obtenerPorId(Long id) {
+        return usuarios.stream().filter(u -> u.getId().equals(id)).findFirst();
     }
 
-    public Usuario findByUsername(String username) {
-        return usuarioRepository.findByUsername(username);
+
+    public Usuario crear(Usuario usuario) {
+        usuario.setId(idGenerator.getAndIncrement());
+        usuarios.add(usuario);
+        return usuario;
     }
 
-    public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
+
+    public Optional<Usuario> actualizar(Long id, Usuario usuarioActualizado) {
+        return obtenerPorId(id).map(usuario -> {
+            usuario.setUsername(usuarioActualizado.getUsername());
+            usuario.setPassword(usuarioActualizado.getPassword());
+            usuario.setRole(usuarioActualizado.getRole());
+            return usuario;
+        });
     }
 
-    public Usuario update(Long id, Usuario usuario) {
-        Usuario existing = usuarioRepository.findById(id).orElseThrow();
-        existing.setUsername(usuario.getUsername());
-        existing.setPassword(usuario.getPassword());
-        existing.setRole(usuario.getRole());
-        return usuarioRepository.save(existing);
-    }
 
-    public void delete(Long id) {
-        usuarioRepository.deleteById(id);
+    public boolean eliminar(Long id) {
+        return usuarios.removeIf(u -> u.getId().equals(id));
     }
 }

@@ -1,51 +1,61 @@
 package com.ecomarket_spa.ecomarket_spa.controller;
 
+
 import com.ecomarket_spa.ecomarket_spa.model.Envio;
 import com.ecomarket_spa.ecomarket_spa.service.EnvioService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
-        import java.util.List;
+
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/envios")
-@CrossOrigin(origins = "*")
+@Tag(name = "Envios", description = "Operaciones relacionadas con envíos")
 public class EnvioController {
 
-    @Autowired
-    private EnvioService envioService;
+
+    private final EnvioService envioService;
+
+
+    public EnvioController(EnvioService envioService) {
+        this.envioService = envioService;
+    }
+
 
     @GetMapping
-    public List<Envio> listarEnvios() {
-        return envioService.obtenerTodos();
+    @Operation(summary = "Obtener todos los envíos")
+    public List<Envio> obtenerTodos() {
+        return envioService.obtenerTodosLosEnvios();
     }
+
 
     @GetMapping("/{id}")
-    public ResponseEntity<Envio> obtenerPorId(@PathVariable Long id) {
-        return envioService.obtenerPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @Operation(summary = "Obtener un envío por su ID")
+    public Envio obtenerPorId(@PathVariable Long id) {
+        return envioService.obtenerEnvioPorId(id);
     }
 
+
     @PostMapping
+    @Operation(summary = "Crear un nuevo envío")
     public Envio crearEnvio(@RequestBody Envio envio) {
         return envioService.crearEnvio(envio);
     }
 
+
     @PutMapping("/{id}")
-    public ResponseEntity<Envio> actualizarEnvio(@PathVariable Long id, @RequestBody Envio envio) {
-        try {
-            Envio actualizado = envioService.actualizarEnvio(id, envio);
-            return ResponseEntity.ok(actualizado);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    @Operation(summary = "Actualizar un envío existente")
+    public Envio actualizarEnvio(@PathVariable Long id, @RequestBody Envio envio) {
+        return envioService.actualizarEnvio(id, envio);
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarEnvio(@PathVariable Long id) {
+    @Operation(summary = "Eliminar un envío")
+    public void eliminarEnvio(@PathVariable Long id) {
         envioService.eliminarEnvio(id);
-        return ResponseEntity.noContent().build();
     }
 }

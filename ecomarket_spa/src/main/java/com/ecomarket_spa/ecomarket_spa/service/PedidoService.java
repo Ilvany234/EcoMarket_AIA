@@ -1,41 +1,59 @@
 package com.ecomarket_spa.ecomarket_spa.service;
 
+
 import com.ecomarket_spa.ecomarket_spa.model.Pedido;
-import com.ecomarket_spa.ecomarket_spa.repository.PedidoRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+
 
 @Service
 public class PedidoService {
 
-    private final PedidoRepository pedidoRepository;
 
-    public PedidoService(PedidoRepository pedidoRepository) {
-        this.pedidoRepository = pedidoRepository;
+    private final Map<Long, Pedido> pedidoStorage = new HashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong();
+
+
+    public List<Pedido> obtenerTodosLosPedidos() {
+        return new ArrayList<>(pedidoStorage.values());
     }
 
-    public Pedido save(Pedido pedido) {
-        return pedidoRepository.save(pedido);
+
+    public Pedido obtenerPedidoPorId(Long id) {
+        Pedido pedido = pedidoStorage.get(id);
+        if (pedido == null) {
+            throw new NoSuchElementException("Pedido no encontrado con ID: " + id);
+        }
+        return pedido;
     }
 
-    public List<Pedido> findAll() {
-        return pedidoRepository.findAll();
+
+    // Puedes agregar métodos crear, actualizar y eliminar si el controller los requiere más adelante.
+    public Pedido crearPedido(Pedido pedido) {
+        Long id = idGenerator.incrementAndGet();
+        pedido.setId(id);
+        pedidoStorage.put(id, pedido);
+        return pedido;
     }
 
-    public Pedido findById(Long id) {
-        return pedidoRepository.findById(id).orElseThrow();
+
+    public Pedido actualizarPedido(Long id, Pedido pedidoActualizado) {
+        if (!pedidoStorage.containsKey(id)) {
+            throw new NoSuchElementException("No se puede actualizar. Pedido no encontrado con ID: " + id);
+        }
+        pedidoActualizado.setId(id);
+        pedidoStorage.put(id, pedidoActualizado);
+        return pedidoActualizado;
     }
 
-    public Pedido update(Long id, Pedido pedido) {
-        Pedido existing = findById(id);
-        existing.setUserId(pedido.getUserId());
-        existing.setOrderDate(pedido.getOrderDate());
-        existing.setStatus(pedido.getStatus());
-        return pedidoRepository.save(existing);
-    }
 
-    public void delete(Long id) {
-        pedidoRepository.deleteById(id);
+    public void eliminarPedido(Long id) {
+        if (!pedidoStorage.containsKey(id)) {
+            throw new NoSuchElementException("No se puede eliminar. Pedido no encontrado con ID: " + id);
+        }
+        pedidoStorage.remove(id);
     }
 }
