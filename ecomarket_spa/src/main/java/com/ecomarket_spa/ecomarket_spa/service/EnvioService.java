@@ -1,60 +1,33 @@
-package com.ecomarket_spa.ecomarket_spa.service;
-
-
-import com.ecomarket_spa.ecomarket_spa.model.Envio;
-import org.springframework.stereotype.Service;
-
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
-
-
 @Service
+@Profile("hateoas") // Solo para pruebas HATEOAS
 public class EnvioService {
 
-
-    private final Map<Long, Envio> envioStorage = new HashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong();
-
+    private final List<Envio> envios = List.of(
+        new Envio(1L, "Santiago", "Valparaíso", "2025-07-01"),
+        new Envio(2L, "Temuco", "Puerto Montt", "2025-07-02")
+    );
 
     public List<Envio> obtenerTodosLosEnvios() {
-        return new ArrayList<>(envioStorage.values());
+        return envios;
     }
-
 
     public Envio obtenerEnvioPorId(Long id) {
-        Envio envio = envioStorage.get(id);
-        if (envio == null) {
-            throw new NoSuchElementException("Envío no encontrado con ID: " + id);
-        }
-        return envio;
+        return envios.stream()
+                .filter(e -> e.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Envío no encontrado"));
     }
-
 
     public Envio crearEnvio(Envio envio) {
-        Long id = idGenerator.incrementAndGet();
-        envio.setId(id);
-        envioStorage.put(id, envio);
+        // Simulado
         return envio;
     }
 
-
-    public Envio actualizarEnvio(Long id, Envio envioActualizado) {
-        if (!envioStorage.containsKey(id)) {
-            throw new NoSuchElementException("No se puede actualizar. Envío no encontrado con ID: " + id);
-        }
-        envioActualizado.setId(id);
-        envioStorage.put(id, envioActualizado);
-        return envioActualizado;
+    public Envio actualizarEnvio(Long id, Envio envio) {
+        return envio;
     }
-
 
     public void eliminarEnvio(Long id) {
-        if (!envioStorage.containsKey(id)) {
-            throw new NoSuchElementException("No se puede eliminar. Envío no encontrado con ID: " + id);
-        }
-        envioStorage.remove(id);
+        // Simulado
     }
 }
-
-
